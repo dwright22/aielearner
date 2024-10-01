@@ -1,11 +1,11 @@
 'use client';
 
-import { SessionProvider, useSession } from "next-auth/react";
+import { useSession } from "next-auth/react";
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 import DashboardLayout from './DashboardLayout';
 
-function DashboardContent({ children }) {
+export default function ClientDashboardWrapper({ children }) {
   const { data: session, status } = useSession();
   const router = useRouter();
 
@@ -24,12 +24,4 @@ function DashboardContent({ children }) {
   }
 
   return <DashboardLayout>{children}</DashboardLayout>;
-}
-
-export default function ClientDashboardWrapper({ children }) {
-  return (
-    <SessionProvider>
-      <DashboardContent>{children}</DashboardContent>
-    </SessionProvider>
-  );
 }
