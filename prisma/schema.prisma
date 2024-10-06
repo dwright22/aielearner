@@ -1,9 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -14,18 +8,21 @@ datasource db {
 }
 
 model User {
-  id             String       @id @default(auto()) @map("_id") @db.ObjectId
+  id             String    @id @default(auto()) @map("_id") @db.ObjectId
   name           String?
-  email          String       @unique
+  email          String    @unique
   emailVerified  DateTime?
   hashedPassword String?
   image          String?
-  role           Role         @default(USER)
-  createdAt      DateTime     @default(now())
-  updatedAt      DateTime     @updatedAt
+  role           Role      @default(USER)
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
   accounts       Account[]
   sessions       Session[]
   enrollments    Enrollment[]
+  progress       Progress[]
+  highlights     Highlight[]
+  recommendationEvents RecommendationEvent[]
 }
 
 model Account {
@@ -68,26 +65,77 @@ model Course {
   id          String       @id @default(auto()) @map("_id") @db.ObjectId
   title       String
   description String
+  type        CourseType
+  content     String
   createdAt   DateTime     @default(now())
   updatedAt   DateTime     @updatedAt
   enrollments Enrollment[]
+  progress    Progress[]
+  highlights  Highlight[]
 }
 
 model Enrollment {
   id        String   @id @default(auto()) @map("_id") @db.ObjectId
   userId    String   @db.ObjectId
   courseId  String   @db.ObjectId
-  progress  Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  progress  Progress?
+  rating    Int?
 
   @@unique([userId, courseId])
+}
+
+model Progress {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  courseId  String   @db.ObjectId
+  progress  Float    @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  enrollment Enrollment @relation(fields: [userId, courseId], references: [userId, courseId])
+
+  @@unique([userId, courseId])
+}
+
+model Highlight {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId    String   @db.ObjectId
+  courseId  String   @db.ObjectId
+  content   String
+  note      String?
+  type      HighlightType
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+}
+
+model RecommendationEvent {
+  id                   String   @id @default(auto()) @map("_id") @db.ObjectId
+  userId               String   @db.ObjectId
+  abTestVersion        String
+  recommendedCourseIds String[]
+  createdAt            DateTime @default(now())
+  user                 User     @relation(fields: [userId], references: [id])
 }
 
 enum Role {
   USER
   SUBSCRIBED_USER
   ADMIN
+}
+
+enum CourseType {
+  VIDEO
+  TEXT
+}
+
+enum HighlightType {
+  HIGHLIGHT
+  NOTE
 }

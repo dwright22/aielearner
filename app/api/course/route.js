@@ -9,11 +9,11 @@ export async function POST(req) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { title, description } = await req.json();
+  const { title, description, type, content } = await req.json();
 
   try {
     const course = await prisma.course.create({
-      data: { title, description },
+      data: { title, description, type, content },
     });
     return NextResponse.json(course, { status: 201 });
   } catch (error) {
@@ -32,12 +32,12 @@ export async function PUT(req) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const { id, title, description } = await req.json();
+  const { id, title, description, type, content } = await req.json();
 
   try {
     const course = await prisma.course.update({
       where: { id },
-      data: { title, description },
+      data: { title, description, type, content },
     });
     return NextResponse.json(course);
   } catch (error) {
