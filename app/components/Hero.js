@@ -6,6 +6,8 @@ import { motion } from 'framer-motion';
 
 // Import your Lottie JSON file
 import lottieAnimation from '../assets/lottie.json';
+import Link from 'next/link';
+
 
 const Hero = () => {
   const [animationData, setAnimationData] = useState(null);
@@ -33,7 +35,9 @@ const Hero = () => {
           whileHover={{ scale: 1.05 }}
           whileTap={{ scale: 0.95 }}
         >
-          Get Started
+           <Link href="/register" className="text-white-300 hover:text-white-400 transition-colors duration-300">
+            Get Started
+          </Link>
         </motion.button>
       </motion.div>
       <motion.div 

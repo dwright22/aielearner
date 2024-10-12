@@ -1,22 +1,18 @@
+// DashboardLayout.js
 'use client';
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { useSession } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
 import LogoutButton from './LogoutButton';
 
-export default function DashboardLayout({ children }) {
-  const { data: session } = useSession();
-  const router = useRouter();
+export default function DashboardLayout({ children, session }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="h-screen flex overflow-hidden bg-gray-100">
-      {/* Sidebar component, swap this element with another sidebar if you like */}
+      {/* Sidebar */}
       <div className="md:flex md:flex-shrink-0">
         <div className="flex flex-col w-64">
-          {/* Sidebar component, swap this element with another sidebar if you like */}
           <div className="flex flex-col h-0 flex-1 bg-gray-800">
             <div className="flex items-center h-16 flex-shrink-0 px-4 bg-gray-900">
               <img className="h-8 w-auto" src="/logo.svg" alt="Your Company" />

@@ -27,7 +27,7 @@ const NavBar = () => {
         { href: '/resources', label: 'Resources' },
         { href: '/blog', label: 'Blog' },
         { href: '/login', label: 'Login' },
-        { href: '/signup', label: 'Sign Up' },
+        { href: '/register', label: 'Sign Up' },
       ];
 
   if (!mounted) return null;

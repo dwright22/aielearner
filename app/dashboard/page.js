@@ -12,10 +12,19 @@ import { Suspense } from 'react';
 export default async function Dashboard() {
   const session = await getServerSession(authOptions);
 
-  if (!session) {
-    return <div>Access Denied</div>;
-  }
+  console.log("Full session object:", JSON.stringify(session, null, 2));
+  console.log("User object:", JSON.stringify(session?.user, null, 2));
+  console.log("User role:", session?.user?.role);
 
+  if (!session) {
+    console.log("No server-side session found, redirecting to login");
+    return (
+      <ClientDashboardWrapper>
+        <div>Redirecting to login...</div>
+      </ClientDashboardWrapper>
+    );
+  }
+  console.log("User authenticated, rendering dashboard");
   const user = session.user;
   let content;
 
@@ -193,8 +202,9 @@ export default async function Dashboard() {
   }
 
   return (
-    <ClientDashboardWrapper>
-      <h1 className="text-3xl font-bold mb-6">Welcome, {user.name}</h1>
+    <ClientDashboardWrapper session={session}>
+      <h1>Welcome to your dashboard, {session?.user?.name || 'User'}</h1>
+      <pre>{JSON.stringify(session, null, 2)}</pre>
       <SearchBar />
       <Suspense fallback={<LoadingSpinner />}>
         {content}
